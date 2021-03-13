@@ -275,8 +275,17 @@ const updateController = async (req, res, next) => {
 };
 
 // DELETE /quizzes/:id
-const destroyController = (req, res, next) => {
-    // .... introducir código
+const destroyController = async (req, res, next) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) return next(new Error(`"${req.params.id}" should be number.`));
+
+    try {
+        let n = await Quiz.destroy({where: {id}});
+        if (n===0) return next(new Error(`Quiz ${id} not found.`));
+        res.redirect(`/quizzes`);
+    } catch (err) {
+        next(err)
+    }
 };
 
 
@@ -295,6 +304,7 @@ app.get('/quizzes/:id/edit', editController);
 //   PUT  /quizzes/:id
 app.put('/quizzes/:id', updateController);
 //   DELETE  /quizzes/:id
+app.delete('/quizzes/:id', destroyController);
 
 
 app.all('*', (req, res) =>

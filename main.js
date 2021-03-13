@@ -258,8 +258,20 @@ const editController = async (req, res, next) => {
 };
 
 //  PUT /quizzes/:id
-const updateController = (req, res, next) => {
-    // .... introducir código
+const updateController = async (req, res, next) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) return next(new Error(`"${req.params.id}" should be number.`));
+
+    const {question, answer} = req.body;
+    if (!question) return next(new Error("Question can't be empty!"));
+    if (!answer) return next(new Error("Answer can't be empty!"));
+
+    try {
+        await Quiz.update({question, answer}, {where: {id}});
+        res.redirect(`/quizzes`);
+    } catch (err) {
+        next(err)
+    }
 };
 
 // DELETE /quizzes/:id
@@ -281,6 +293,7 @@ app.post('/quizzes', createController);
 //   GET  /quizzes/:id/edit
 app.get('/quizzes/:id/edit', editController);
 //   PUT  /quizzes/:id
+app.put('/quizzes/:id', updateController);
 //   DELETE  /quizzes/:id
 
 

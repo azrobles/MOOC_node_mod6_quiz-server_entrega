@@ -154,7 +154,27 @@ const newView = quiz => {
 
 // View to show a form to edit a given quiz.
 const editView = (quiz) => {
-    // .... introducir código
+    return `<!doctype html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quiz</title>
+    ${style}
+  </head>
+  <body>
+    <h1>Edit Quiz</h1>
+    <form method="POST" action="/quizzes/${quiz.id}?_method=PUT">
+      <label for="question">Question: </label>
+      <input type="text" name="question" value="${quiz.question}" placeholder="Question"> 
+      <br>
+      <label for="answer">Answer: </label>
+      <input type="text" name="answer" value="${quiz.answer}" placeholder="Answer">
+      <input type="submit" class="button" value="Edit">
+    </form>
+    <br>
+    <a href="/quizzes" class="button">Go back</a>
+  </body>
+  </html>`;
 }
 
 
@@ -224,8 +244,17 @@ const createController = async (req, res, next) => {
 };
 
 //  GET /quizzes/:id/edit
-const editController = (req, res, next) => {
-    // .... introducir código
+const editController = async (req, res, next) => {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) return next(new Error(`"${req.params.id}" should be number.`));
+
+    try {
+        const quiz = await Quiz.findByPk(id);
+        if (quiz) res.send(editView(quiz));
+        else next(new Error(`Quiz ${id} not found.`));
+    } catch (err) {
+        next(err)
+    }
 };
 
 //  PUT /quizzes/:id
@@ -250,6 +279,7 @@ app.post('/quizzes', createController);
 
 // ..... crear rutas e instalar los MWs para:
 //   GET  /quizzes/:id/edit
+app.get('/quizzes/:id/edit', editController);
 //   PUT  /quizzes/:id
 //   DELETE  /quizzes/:id
 

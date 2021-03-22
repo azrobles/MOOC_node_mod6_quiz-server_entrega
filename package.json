@@ -6,7 +6,8 @@
     "version": "0.0.0",
     "main": "main.js",
     "scripts": {
-        "start": "node main.js"
+        "start": "node main.js",
+        "test": "mocha tests/mocha_test.js"
     },
     "info": {
         "githubURL": "ging-moocs/MOOC_node_mod6_quiz-server_entrega",
@@ -15,10 +16,15 @@
         "assignmentId": "11"
     },
     "dependencies": {
-        "sequelize": "^4.32.7",
-        "sqlite3": "^4.0.4",
+        "chai": "^4.3.4",
+        "chai-http": "^4.3.0",
         "express": "^4.0.0",
+        "fs-extra": "^6.0.1",
         "method-override": "^3.0.0",
-        "fs-extra": "^6.0.1"
+        "sequelize": "^4.32.7",
+        "sqlite3": "^4.0.4"
+    },
+    "devDependencies": {
+        "zombie": "^6.1.4"
     }
 }
